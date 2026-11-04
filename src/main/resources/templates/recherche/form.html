@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Recherche de Formations</title>
+    <style>
+        .search-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 50%;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Rechercher une formation</h1>
+    <a th:href="@{/}"><button>Retour à l'accueil</button></a>
+
+    <!-- Formulaire de recherche -->
+    <div class="search-box">
+        <form th:action="@{/recherche}" method="post">
+            <label>Thème : </label>
+            <select name="theme" required>
+                <option value="">-- Choisir un thème --</option>
+                <option th:each="t : ${themes}" th:value="${t.theme}" th:text="${t.theme}"></option>
+            </select><br><br>
+
+            <label>Du : </label>
+            <input type="date" name="du" required><br><br>
+
+            <label>Au : </label>
+            <input type="date" name="au" required><br><br>
+
+            <button type="submit">Rechercher</button>
+        </form>
+    </div>
+
+    <!-- Affichage des résultats (si la variable 'resultats' existe) -->
+    <div th:if="${resultats != null}">
+        <h2>Résultats de la recherche</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Thème</th>
+                    <th>Formateur</th>
+                    <th>Date Début</th>
+                    <th>Date Fin</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Si la liste est vide -->
+                <tr th:if="${resultats.empty}">
+                    <td colspan="5" style="text-align: center;">Aucune session trouvée pour ces critères.</td>
+                </tr>
+                <!-- Si on a des résultats -->
+                <tr th:each="s : ${resultats}">
+                    <td th:text="${s.description}"></td>
+                    <td th:text="${s.themeFormation.theme}"></td>
+                    <td th:text="${s.formateur != null ? s.formateur.prenom + ' ' + s.formateur.nom : 'N/A'}"></td>
+                    <td th:text="${s.datebut}"></td>
+                    <td th:text="${s.datefin}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

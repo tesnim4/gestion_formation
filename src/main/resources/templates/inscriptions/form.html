@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle Inscription</title>
+</head>
+
+<body>
+    <h1>Inscrire un Apprenant</h1>
+    <form th:action="@{/inscriptions/save}" th:object="${inscription}" method="post">
+
+        <label>Apprenant : </label>
+        <select th:field="*{apprenant.id}" required>
+            <option value="">-- Sélectionner un apprenant --</option>
+            <option th:each="a : ${apprenants}" th:value="${a.id}" th:text="${a.prenom + ' ' + a.nom}"></option>
+        </select><br><br>
+
+        <label>Session de formation : </label>
+        <select th:field="*{sessionFormation.id}" required>
+            <option value="">-- Sélectionner une session --</option>
+            <option th:each="s : ${sessions}" th:value="${s.id}" th:text="${s.description + ' (' + s.datebut + ')'}">
+            </option>
+        </select><br><br>
+
+        <button type="submit">Inscrire</button>
+        <a th:href="@{/inscriptions}">Annuler</a>
+    </form>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Apprenants</title>
+    <style>
+        table {
+            width: 70%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Gestion des Apprenants</h1>
+    <a th:href="@{/apprenants/nouveau}"><button>Ajouter un apprenant</button></a>
+    <a th:href="@{/}"><button>Retour à l'accueil</button></a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Numéro</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="a : ${apprenants}">
+                <td th:text="${a.id}"></td>
+                <td th:text="${a.numero}"></td>
+                <td th:text="${a.nom}"></td>
+                <td th:text="${a.prenom}"></td>
+                <td th:text="${a.email}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

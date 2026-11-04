@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvel Apprenant</title>
+</head>
+
+<body>
+    <h1>Ajouter un Apprenant</h1>
+    <form th:action="@{/apprenants/save}" th:object="${apprenant}" method="post">
+        <label>CIN : </label> <input type="text" th:field="*{cin}"><br><br>
+        <label>Nom : </label> <input type="text" th:field="*{nom}" required><br><br>
+        <label>Prénom : </label> <input type="text" th:field="*{prenom}" required><br><br>
+        <label>Date de Naissance : </label> <input type="date" th:field="*{dateNaissance}"><br><br>
+        <label>Email : </label> <input type="email" th:field="*{email}"><br><br>
+
+        <label>Numéro Apprenant : </label> <input type="text" th:field="*{numero}"><br><br>
+        <label>Date 1ère Inscription : </label> <input type="date" th:field="*{datePremiereInscription}"><br><br>
+
+        <button type="submit">Enregistrer</button>
+        <a th:href="@{/apprenants}">Annuler</a>
+    </form>
+</body>
+
+</html>
