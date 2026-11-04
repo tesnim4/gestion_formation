@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouveau Thème</title>
+</head>
+<body>
+    <h1>Créer un Thème</h1>
+    <form th:action="@{/themes/save}" th:object="${theme}" method="post">
+        <label>Intitulé : </label>
+        <input type="text" th:field="*{theme}" required><br><br>
+        
+        <label>Mots-clés : </label>
+        <input type="text" th:field="*{motsCles}"><br><br>
+        
+        <button type="submit">Enregistrer</button>
+        <a th:href="@{/themes}">Annuler</a>
+    </form>
+</body>
+</html>
