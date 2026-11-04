@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Formateurs</title>
+    <style>
+        table { width: 70%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Gestion des Formateurs</h1>
+    <a th:href="@{/formateurs/nouveau}"><button>Ajouter un formateur</button></a>
+    <a th:href="@{/}"><button>Retour à l'accueil</button></a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Grade</th>
+                <th>Fonction</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="f : ${formateurs}">
+                <td th:text="${f.id}"></td>
+                <td th:text="${f.nom}"></td>
+                <td th:text="${f.prenom}"></td>
+                <td th:text="${f.grade}"></td>
+                <td th:text="${f.fonction}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
