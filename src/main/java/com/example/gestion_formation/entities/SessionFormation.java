@@ -19,6 +19,11 @@ public class SessionFormation {
     @JoinColumn(name = "theme_id")
     private ThemeFormation themeFormation;
 
+    @ManyToOne
+    @JoinColumn(name = "formateur_id")
+    private Formateur formateur;
+
+
     @OneToMany(mappedBy = "sessionFormation")
     private List<Inscription> inscriptions;
 }
