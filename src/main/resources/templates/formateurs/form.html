@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouveau Formateur</title>
+</head>
+<body>
+    <h1>Ajouter un Formateur</h1>
+    <form th:action="@{/formateurs/save}" th:object="${formateur}" method="post">
+        
+        <label>CIN : </label> <input type="text" th:field="*{cin}"><br><br>
+        <label>Nom : </label> <input type="text" th:field="*{nom}" required><br><br>
+        <label>Prénom : </label> <input type="text" th:field="*{prenom}" required><br><br>
+        <label>Date de Naissance : </label> <input type="date" th:field="*{dateNaissance}"><br><br>
+        <label>Email : </label> <input type="email" th:field="*{email}"><br><br>
+        
+        <label>Grade : </label> <input type="text" th:field="*{grade}"><br><br>
+        <label>Fonction : </label> <input type="text" th:field="*{fonction}"><br><br>
+        <label>Date 1ère Formation : </label> <input type="date" th:field="*{datePremiereFormation}"><br><br>
+        
+        <button type="submit">Enregistrer</button>
+        <a th:href="@{/formateurs}">Annuler</a>
+    </form>
+</body>
+</html>
