@@ -3,6 +3,7 @@ package com.example.gestion_formation.controllers;
 import org.springframework.stereotype.Controller;
 
 import com.example.gestion_formation.entities.SessionFormation;
+import com.example.gestion_formation.repositories.FormateurRepository;
 import com.example.gestion_formation.repositories.SessionFormationRepository;
 import com.example.gestion_formation.repositories.ThemeFormationRepository;
 import com.example.gestion_formation.services.SessionFormationService;
@@ -16,25 +17,28 @@ public class SessionController {
     private final SessionFormationRepository sessionRepo;
     private final ThemeFormationRepository themeRepo;
     private final SessionFormationService sessionService;
+    private final FormateurRepository formateurRepo;
 
     public SessionController(SessionFormationRepository sessionRepo, ThemeFormationRepository themeRepo,
-            SessionFormationService sessionService) {
+            SessionFormationService sessionService, FormateurRepository formateurRepo) {
         this.sessionRepo = sessionRepo;
         this.themeRepo = themeRepo;
         this.sessionService = sessionService;
+        this.formateurRepo = formateurRepo;
     }
 
     @GetMapping
     public String liste(Model model) {
         model.addAttribute("sessions", sessionRepo.findAll());
-        return "sessions/liste"; 
+        return "sessions/liste";
     }
 
     @GetMapping("/nouvelle")
     public String formNouvelle(Model model) {
         model.addAttribute("session", new SessionFormation());
-        model.addAttribute("themes", themeRepo.findAll()); 
-        return "sessions/form"; 
+        model.addAttribute("themes", themeRepo.findAll());
+        model.addAttribute("formateurs", formateurRepo.findAll());
+        return "sessions/form";
     }
 
     @PostMapping("/save")
