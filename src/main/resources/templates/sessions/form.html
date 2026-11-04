@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle Session</title>
+</head>
+<body>
+    <h1>Créer une Session de Formation</h1>
+    <form th:action="@{/sessions/save}" th:object="${session}" method="post">
+        
+        <label>Description : </label>
+        <input type="text" th:field="*{description}" required><br><br>
+        
+        <label>Thème : </label>
+        <select th:field="*{themeFormation.id}" required>
+            <option value="">-- Sélectionner un thème --</option>
+            <option th:each="t : ${themes}" th:value="${t.id}" th:text="${t.theme}"></option>
+        </select><br><br>
+
+        <label>Formateur : </label>
+        <select th:field="*{formateur.id}" required>
+            <option value="">-- Sélectionner un formateur --</option>
+            <option th:each="f : ${formateurs}" th:value="${f.id}" th:text="${f.prenom + ' ' + f.nom}"></option>
+        </select><br><br>
+        
+        <label>Date début : </label>
+        <input type="date" th:field="*{datebut}" required><br><br>
+        
+        <label>Date fin : </label>
+        <input type="date" th:field="*{datefin}" required><br><br>
+        
+        <button type="submit">Enregistrer</button>
+        <a th:href="@{/sessions}">Annuler</a>
+    </form>
+</body>
+</html>
