@@ -31,13 +31,21 @@ public class InscriptionRestController {
     @PreAuthorize("hasAnyRole('ADMIN','FORMATEUR','APPRENANT')")
     public List<InscriptionDTO> getAll(Authentication auth) {
         boolean isApprenant = auth.getAuthorities().stream()
-            .anyMatch(a -> a.getAuthority().equals("ROLE_APPRENANT"));
+                .anyMatch(a -> a.getAuthority().equals("ROLE_APPRENANT"));
 
         List<Inscription> list = isApprenant
-            ? inscriptionRepo.findByApprenantEmail(auth.getName()) // à ajouter dans le repository
-            : inscriptionRepo.findAll();
+                ? inscriptionRepo.findByApprenantEmail(auth.getName()) // à ajouter dans le repository
+                : inscriptionRepo.findAll();
 
         return list.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','FORMATEUR')")
+    public InscriptionDTO getById(@PathVariable Long id) {
+        Inscription i = inscriptionRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Inscription introuvable avec l'id : " + id));
+        return toDTO(i);
     }
 
     @PostMapping
@@ -47,6 +55,20 @@ public class InscriptionRestController {
         i.setDateInscription(LocalDate.now());
         i.setApprenant(apprenantRepo.findById(dto.getApprenantId()).orElseThrow());
         i.setSessionFormation(sessionRepo.findById(dto.getSessionId()).orElseThrow());
+        return toDTO(inscriptionRepo.save(i));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','FORMATEUR')")
+    public InscriptionDTO update(@PathVariable Long id, @RequestBody InscriptionDTO dto) {
+        Inscription i = inscriptionRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Inscription introuvable avec l'id : " + id));
+
+        // On met à jour l'apprenant et la session (on garde la date d'inscription
+        // d'origine)
+        i.setApprenant(apprenantRepo.findById(dto.getApprenantId()).orElseThrow());
+        i.setSessionFormation(sessionRepo.findById(dto.getSessionId()).orElseThrow());
+
         return toDTO(inscriptionRepo.save(i));
     }
 

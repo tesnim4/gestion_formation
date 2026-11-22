@@ -31,6 +31,14 @@ public class SessionRestController {
         return sessionRepo.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','FORMATEUR')")
+    public SessionDTO getById(@PathVariable Long id) {
+        SessionFormation s = sessionRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Session introuvable avec l'id : " + id));
+        return toDTO(s);
+    }
+
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','FORMATEUR')")
     public SessionDTO create(@RequestBody SessionDTO dto) {
@@ -42,6 +50,29 @@ public class SessionRestController {
         if (dto.getFormateurId() != null) {
             s.setFormateur(formateurRepo.findById(dto.getFormateurId()).orElse(null));
         }
+        return toDTO(sessionRepo.save(s));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','FORMATEUR')")
+    public SessionDTO update(@PathVariable Long id, @RequestBody SessionDTO dto) {
+        SessionFormation s = sessionRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Session introuvable avec l'id : " + id));
+
+        s.setDescription(dto.getDescription());
+        s.setDatebut(dto.getDateDebut());
+        s.setDatefin(dto.getDateFin());
+
+        if (dto.getThemeId() != null) {
+            s.setThemeFormation(themeRepo.findById(dto.getThemeId()).orElse(null));
+        }
+
+        if (dto.getFormateurId() != null) {
+            s.setFormateur(formateurRepo.findById(dto.getFormateurId()).orElse(null));
+        } else {
+            s.setFormateur(null); // Permet de retirer le formateur si le champ est vidé
+        }
+
         return toDTO(sessionRepo.save(s));
     }
 

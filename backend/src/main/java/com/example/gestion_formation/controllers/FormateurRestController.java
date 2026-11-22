@@ -35,12 +35,19 @@ public class FormateurRestController {
         return formateurRepo.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    @GetMapping("/{id}")
+    public FormateurDTO getById(@PathVariable Long id) {
+        Formateur f = formateurRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Formateur introuvable avec l'id : " + id));
+        return toDTO(f);
+    }
+
     @PostMapping
     public FormateurDTO create(@RequestBody Formateur formateur) {
         Formateur savedFormateur = formateurRepo.save(formateur);
 
         if (savedFormateur.getEmail() != null && utilisateurRepo.findByUsername(savedFormateur.getEmail()).isEmpty()) {
-            
+
             Utilisateur user = new Utilisateur();
             user.setUsername(savedFormateur.getEmail());
             user.setPassword(passwordEncoder.encode("123456"));
@@ -55,10 +62,31 @@ public class FormateurRestController {
             user.setRoles(List.of(userRole));
 
             utilisateurRepo.save(user);
-            
-            System.out.println(" Compte Formateur créé pour : " + savedFormateur.getEmail() + " / mot de passe: 123456");
+
+            System.out
+                    .println(" Compte Formateur créé pour : " + savedFormateur.getEmail() + " / mot de passe: 123456");
         }
 
+        return toDTO(savedFormateur);
+    }
+
+    @PutMapping("/{id}")
+    public FormateurDTO update(@PathVariable Long id, @RequestBody Formateur updatedFormateur) {
+        Formateur f = formateurRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Formateur introuvable avec l'id : " + id));
+
+        f.setCin(updatedFormateur.getCin());
+        f.setNom(updatedFormateur.getNom());
+        f.setPrenom(updatedFormateur.getPrenom());
+        f.setEmail(updatedFormateur.getEmail());
+        f.setGrade(updatedFormateur.getGrade());
+        f.setFonction(updatedFormateur.getFonction());
+
+        // Si tu as d'autres champs modifiables (comme la date de naissance), ajoute-les
+        // ici
+        // f.setDateNaissance(updatedFormateur.getDateNaissance());
+
+        Formateur savedFormateur = formateurRepo.save(f);
         return toDTO(savedFormateur);
     }
 
