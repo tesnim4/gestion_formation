@@ -20,30 +20,38 @@ export default function LoginPage() {
     };
 
     return (
-        <div style={{ maxWidth: 400, margin: '100px auto', textAlign: 'center', padding: 20, border: '1px solid #ccc', borderRadius: 8 }}>
-            <h2>Connexion</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                    style={{ display: 'block', width: '100%', padding: 8, marginBottom: 10, boxSizing: 'border-box' }}
-                />
-                <input
-                    type="password"
-                    placeholder="Mot de passe"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    style={{ display: 'block', width: '100%', padding: 8, marginBottom: 10, boxSizing: 'border-box' }}
-                />
-                <button type="submit" style={{ width: '100%', padding: 10, background: '#007bff', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
-                    Se connecter
-                </button>
-            </form>
+        <div className="login-page">
+            <div className="login-card">
+                <div className="brand-logo">🎯</div>
+                <h2>Bienvenue</h2>
+                <p className="sub">Connectez-vous à votre espace de gestion des formations</p>
+
+                {error && <div className="alert-error">{error}</div>}
+
+                <form onSubmit={handleSubmit}>
+                    <div className="field">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            placeholder="vous@exemple.com"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="field">
+                        <label>Mot de passe</label>
+                        <input
+                            type="password"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-primary">Se connecter</button>
+                </form>
+            </div>
         </div>
     );
 }

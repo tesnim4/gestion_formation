@@ -7,7 +7,6 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Vérifier si l'utilisateur est déjà connecté au chargement de la page
     useEffect(() => {
         axiosClient.get('/auth/me')
             .then(res => setUser(res.data))
@@ -17,7 +16,7 @@ export function AuthProvider({ children }) {
 
     const login = async (username, password) => {
         const res = await axiosClient.post('/auth/login', { username, password });
-        setUser(res.data); // res.data contient { username, roles: [...] }
+        setUser(res.data); 
         return res.data;
     };
 

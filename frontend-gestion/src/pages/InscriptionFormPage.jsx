@@ -16,7 +16,6 @@ export default function InscriptionFormPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // 1. Charger les listes pour les menus déroulants
                 const [resApprenants, resSessions] = await Promise.all([
                     axiosClient.get('/apprenants'),
                     axiosClient.get('/sessions')
@@ -24,7 +23,6 @@ export default function InscriptionFormPage() {
                 setApprenants(resApprenants.data);
                 setSessions(resSessions.data);
 
-                // 2. Si on est en modification, charger l'inscription
                 if (isEditMode) {
                     const resInscription = await axiosClient.get(`/inscriptions/${id}`);
                     const i = resInscription.data;
@@ -57,59 +55,60 @@ export default function InscriptionFormPage() {
             } else {
                 await axiosClient.post('/inscriptions', payload);
             }
-            navigate('/inscriptions'); // Redirection vers la liste
+            navigate('/inscriptions');
         } catch (err) {
             console.error(err);
             setError("Erreur lors de l'enregistrement. Vérifiez les données.");
         }
     };
 
-    if (loading) return <div style={{ padding: 30 }}>Chargement...</div>;
+    if (loading) return <div className="state-box">Chargement...</div>;
 
     return (
-        <div style={{ padding: 30, maxWidth: 600, margin: '0 auto' }}>
-            <Link to="/inscriptions">← Retour à la liste</Link>
-            <h2>{isEditMode ? "Modifier l'inscription" : "Inscrire un apprenant"}</h2>
-            
-            {error && <div style={{ color: 'red', background: '#ffeeee', padding: 10, borderRadius: 4, marginBottom: 15 }}>{error}</div>}
+        <div>
+            <Link to="/inscriptions" className="back-link">← Retour à la liste</Link>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 15, background: '#f9f9f9', padding: 20, borderRadius: 8 }}>
-                
-                <div>
-                    <label style={{ display: 'block', marginBottom: 5 }}>Apprenant :</label>
-                    <select 
-                        value={form.apprenantId} 
-                        onChange={e => setForm({...form, apprenantId: e.target.value})} 
-                        required 
-                        style={{ width: '100%', padding: 8 }}
-                    >
-                        <option value="">-- Choisir un apprenant --</option>
-                        {apprenants.map(a => <option key={a.id} value={a.id}>{a.prenom} {a.nom}</option>)}
-                    </select>
-                </div>
+            <div className="card form-card">
+                <h2>{isEditMode ? "Modifier l'inscription" : "Inscrire un apprenant"}</h2>
+                <p className="sub">Associez un apprenant à une session de formation.</p>
 
-                <div>
-                    <label style={{ display: 'block', marginBottom: 5 }}>Session :</label>
-                    <select 
-                        value={form.sessionId} 
-                        onChange={e => setForm({...form, sessionId: e.target.value})} 
-                        required 
-                        style={{ width: '100%', padding: 8 }}
-                    >
-                        <option value="">-- Choisir une session --</option>
-                        {sessions.map(s => <option key={s.id} value={s.id}>{s.description}</option>)}
-                    </select>
-                </div>
+                {error && <div className="alert-error">{error}</div>}
 
-                <div style={{ marginTop: 15, display: 'flex', gap: 10 }}>
-                    <button type="submit" style={{ padding: '10px 20px', background: '#28a745', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
-                        {isEditMode ? "Enregistrer les modifications" : "Inscrire"}
-                    </button>
-                    <Link to="/inscriptions">
-                        <button type="button" style={{ padding: '10px 20px', cursor: 'pointer' }}>Annuler</button>
-                    </Link>
-                </div>
-            </form>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-grid">
+                        <div className="field full">
+                            <label>Apprenant</label>
+                            <select
+                                value={form.apprenantId}
+                                onChange={e => setForm({ ...form, apprenantId: e.target.value })}
+                                required
+                            >
+                                <option value="">-- Choisir un apprenant --</option>
+                                {apprenants.map(a => <option key={a.id} value={a.id}>{a.prenom} {a.nom}</option>)}
+                            </select>
+                        </div>
+
+                        <div className="field full">
+                            <label>Session</label>
+                            <select
+                                value={form.sessionId}
+                                onChange={e => setForm({ ...form, sessionId: e.target.value })}
+                                required
+                            >
+                                <option value="">-- Choisir une session --</option>
+                                {sessions.map(s => <option key={s.id} value={s.id}>{s.description}</option>)}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="form-actions">
+                        <button type="submit" className="btn btn-success">
+                            {isEditMode ? "Enregistrer les modifications" : "Inscrire"}
+                        </button>
+                        <Link to="/inscriptions" className="btn btn-ghost">Annuler</Link>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }

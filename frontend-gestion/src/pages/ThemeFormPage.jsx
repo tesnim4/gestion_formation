@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
 
 export default function ThemeFormPage() {
-    const { id } = useParams(); // Récupère l'ID depuis l'URL (ex: /themes/5/edit)
+    const { id } = useParams(); 
     const navigate = useNavigate();
     const isEditMode = Boolean(id);
 
@@ -11,14 +11,13 @@ export default function ThemeFormPage() {
     const [loading, setLoading] = useState(isEditMode);
     const [error, setError] = useState(null);
 
-    // Si on est en mode modification, on charge les données du thème
     useEffect(() => {
         if (isEditMode) {
             axiosClient.get(`/themes/${id}`)
                 .then(res => {
-                    setForm({ 
-                        theme: res.data.theme || '', 
-                        motsCles: res.data.motsCles || '' 
+                    setForm({
+                        theme: res.data.theme || '',
+                        motsCles: res.data.motsCles || ''
                     });
                 })
                 .catch(err => {
@@ -37,51 +36,45 @@ export default function ThemeFormPage() {
             } else {
                 await axiosClient.post('/themes', form);
             }
-            navigate('/themes'); // Redirection vers la liste
+            navigate('/themes');
         } catch (err) {
             console.error(err);
             setError("Erreur lors de l'enregistrement. Vérifiez les champs.");
         }
     };
 
-    if (loading) return <div style={{ padding: 30 }}>Chargement...</div>;
+    if (loading) return <div className="state-box">Chargement...</div>;
 
     return (
-        <div style={{ padding: 30, maxWidth: 600, margin: '0 auto' }}>
-            <Link to="/themes">← Retour à la liste</Link>
-            <h2>{isEditMode ? "Modifier le thème" : "Ajouter un thème"}</h2>
-            
-            {error && <div style={{ color: 'red', background: '#ffeeee', padding: 10, borderRadius: 4, marginBottom: 15 }}>{error}</div>}
+        <div>
+            <Link to="/themes" className="back-link">← Retour à la liste</Link>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 15, background: '#f9f9f9', padding: 20, borderRadius: 8 }}>
-                <div>
-                    <label style={{ display: 'block', marginBottom: 5 }}>Intitulé du thème :</label>
-                    <input 
-                        value={form.theme} 
-                        onChange={e => setForm({...form, theme: e.target.value})} 
-                        required 
-                        style={{ width: '100%', padding: 8 }} 
-                    />
-                </div>
+            <div className="card form-card">
+                <h2>{isEditMode ? "Modifier le thème" : "Ajouter un thème"}</h2>
+                <p className="sub">Décrivez le thème de formation.</p>
 
-                <div>
-                    <label style={{ display: 'block', marginBottom: 5 }}>Mots-clés :</label>
-                    <input 
-                        value={form.motsCles} 
-                        onChange={e => setForm({...form, motsCles: e.target.value})} 
-                        style={{ width: '100%', padding: 8 }} 
-                    />
-                </div>
+                {error && <div className="alert-error">{error}</div>}
 
-                <div style={{ marginTop: 15, display: 'flex', gap: 10 }}>
-                    <button type="submit" style={{ padding: '10px 20px', background: '#28a745', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
-                        {isEditMode ? "Mettre à jour" : "Ajouter"}
-                    </button>
-                    <Link to="/themes">
-                        <button type="button" style={{ padding: '10px 20px', cursor: 'pointer' }}>Annuler</button>
-                    </Link>
-                </div>
-            </form>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-grid">
+                        <div className="field full">
+                            <label>Intitulé du thème</label>
+                            <input value={form.theme} onChange={e => setForm({ ...form, theme: e.target.value })} required />
+                        </div>
+                        <div className="field full">
+                            <label>Mots-clés</label>
+                            <input value={form.motsCles} onChange={e => setForm({ ...form, motsCles: e.target.value })} />
+                        </div>
+                    </div>
+
+                    <div className="form-actions">
+                        <button type="submit" className="btn btn-success">
+                            {isEditMode ? "Mettre à jour" : "Ajouter"}
+                        </button>
+                        <Link to="/themes" className="btn btn-ghost">Annuler</Link>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }
