@@ -3,6 +3,7 @@ package com.example.gestion_formation.controllers;
 import com.example.gestion_formation.entities.Formateur;
 import com.example.gestion_formation.entities.Role;
 import com.example.gestion_formation.entities.Utilisateur;
+import com.example.gestion_formation.entities.UtilisateurRole;
 import com.example.gestion_formation.repositories.FormateurRepository;
 import com.example.gestion_formation.repositories.RoleRepository;
 import com.example.gestion_formation.repositories.UtilisateurRepository;
@@ -25,10 +26,8 @@ public class FormateurController {
     private final RoleRepository roleRepo;
     private final PasswordEncoder passwordEncoder;
 
-    public FormateurController(FormateurRepository formateurRepo, 
-                               UtilisateurRepository utilisateurRepo,
-                               RoleRepository roleRepo,
-                               PasswordEncoder passwordEncoder) {
+    public FormateurController(FormateurRepository formateurRepo, UtilisateurRepository utilisateurRepo,
+                               RoleRepository roleRepo, PasswordEncoder passwordEncoder) {
         this.formateurRepo = formateurRepo;
         this.utilisateurRepo = utilisateurRepo;
         this.roleRepo = roleRepo;
@@ -71,10 +70,14 @@ public class FormateurController {
                 Role roleFormateur = roleRepo.findByNom("ROLE_FORMATEUR")
                         .orElseThrow(() -> new RuntimeException("Erreur: Rôle FORMATEUR introuvable"));
                 
-                user.setRoles(List.of(roleFormateur));
+                UtilisateurRole userRole = new UtilisateurRole();
+                userRole.setUtilisateur(user);
+                userRole.setRole(roleFormateur);
+                
+                user.setRoles(List.of(userRole));
                 
                 utilisateurRepo.save(user);
-                ra.addFlashAttribute("success", "Formateur ajouté ! Compte créé .");
+                ra.addFlashAttribute("success", "Formateur ajouté ! Compte créé (Mot de passe par défaut: 123456).");
             } else {
                 ra.addFlashAttribute("success", "Formateur mis à jour.");
             }
