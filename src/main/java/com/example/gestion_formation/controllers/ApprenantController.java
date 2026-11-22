@@ -3,6 +3,7 @@ package com.example.gestion_formation.controllers;
 import com.example.gestion_formation.entities.Apprenant;
 import com.example.gestion_formation.entities.Role;
 import com.example.gestion_formation.entities.Utilisateur;
+import com.example.gestion_formation.entities.UtilisateurRole;
 import com.example.gestion_formation.repositories.ApprenantRepository;
 import com.example.gestion_formation.repositories.RoleRepository;
 import com.example.gestion_formation.repositories.UtilisateurRepository;
@@ -23,10 +24,8 @@ public class ApprenantController {
     private final RoleRepository roleRepo;
     private final PasswordEncoder passwordEncoder;
 
-    public ApprenantController(ApprenantRepository apprenantRepo, 
-                               UtilisateurRepository utilisateurRepo,
-                               RoleRepository roleRepo,
-                               PasswordEncoder passwordEncoder) {
+    public ApprenantController(ApprenantRepository apprenantRepo, UtilisateurRepository utilisateurRepo,
+                               RoleRepository roleRepo, PasswordEncoder passwordEncoder) {
         this.apprenantRepo = apprenantRepo;
         this.utilisateurRepo = utilisateurRepo;
         this.roleRepo = roleRepo;
@@ -58,10 +57,14 @@ public class ApprenantController {
                 Role roleApprenant = roleRepo.findByNom("ROLE_APPRENANT")
                         .orElseThrow(() -> new RuntimeException("Erreur: Rôle APPRENANT introuvable"));
                 
-                user.setRoles(List.of(roleApprenant));
+                UtilisateurRole userRole = new UtilisateurRole();
+                userRole.setUtilisateur(user);
+                userRole.setRole(roleApprenant);
+                
+                user.setRoles(List.of(userRole));
                 
                 utilisateurRepo.save(user);
-                ra.addFlashAttribute("success", "Apprenant ajouté ! Compte créé avec succès .");
+                ra.addFlashAttribute("success", "Apprenant ajouté ! Compte créé (Mot de passe par défaut: 123456).");
             } else {
                 ra.addFlashAttribute("success", "Apprenant mis à jour.");
             }

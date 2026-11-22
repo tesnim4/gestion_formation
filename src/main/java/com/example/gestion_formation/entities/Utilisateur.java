@@ -20,11 +20,6 @@ public class Utilisateur {
 
     private boolean enabled = true;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "utilisateur_roles",
-        joinColumns = @JoinColumn(name = "utilisateur_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private List<Role> roles;
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<UtilisateurRole> roles;
 }

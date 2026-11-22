@@ -2,6 +2,7 @@ package com.example.gestion_formation.config;
 
 import com.example.gestion_formation.entities.Role;
 import com.example.gestion_formation.entities.Utilisateur;
+import com.example.gestion_formation.entities.UtilisateurRole;
 import com.example.gestion_formation.repositories.RoleRepository;
 import com.example.gestion_formation.repositories.UtilisateurRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,12 @@ public class DataInitializer implements CommandLineRunner {
             Utilisateur admin = new Utilisateur();
             admin.setUsername("admin@test.com"); 
             admin.setPassword(encoder.encode("admin123"));
-            admin.setRoles(List.of(adminRole)); 
+            
+            UtilisateurRole adminLink = new UtilisateurRole();
+            adminLink.setUtilisateur(admin);
+            adminLink.setRole(adminRole);
+            
+            admin.setRoles(List.of(adminLink)); 
             
             utilisateurRepository.save(admin);
             

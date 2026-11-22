@@ -1,6 +1,8 @@
 package com.example.gestion_formation.security;
 
+import com.example.gestion_formation.entities.Role;
 import com.example.gestion_formation.entities.Utilisateur;
+import com.example.gestion_formation.entities.UtilisateurRole;
 import com.example.gestion_formation.repositories.UtilisateurRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.*;
@@ -18,7 +20,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable : " + username));
 
         String[] rolesArray = user.getRoles().stream()
-                .map(role -> role.getNom().replace("ROLE_", ""))
+                .map(UtilisateurRole::getRole)    
+                .map(Role::getNom)                   
+                .map(nom -> nom.replace("ROLE_", ""))
                 .toArray(String[]::new);
 
         return User.withUsername(user.getUsername())
