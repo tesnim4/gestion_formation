@@ -23,6 +23,14 @@ public class ThemeRestController {
         return repo.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FORMATEUR')")
+    public ThemeDTO getById(@PathVariable Long id) {
+        ThemeFormation t = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Thème introuvable avec l'id : " + id));
+        return toDTO(t);
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ThemeDTO create(@RequestBody ThemeFormation theme) {

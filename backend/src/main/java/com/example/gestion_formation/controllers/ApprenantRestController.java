@@ -41,10 +41,10 @@ public class ApprenantRestController {
         Apprenant savedApprenant = apprenantRepo.save(apprenant);
 
         if (savedApprenant.getEmail() != null && utilisateurRepo.findByUsername(savedApprenant.getEmail()).isEmpty()) {
-            
+
             Utilisateur user = new Utilisateur();
             user.setUsername(savedApprenant.getEmail());
-            user.setPassword(passwordEncoder.encode("123456")); 
+            user.setPassword(passwordEncoder.encode("123456"));
             user.setEnabled(true);
 
             Role roleApprenant = roleRepo.findByNom("ROLE_APPRENANT")
@@ -56,11 +56,37 @@ public class ApprenantRestController {
             user.setRoles(List.of(userRole));
 
             utilisateurRepo.save(user);
-            
-            System.out.println(" Compte Apprenant créé pour : " + savedApprenant.getEmail() + " / mot de passe: 123456");
+
+            System.out
+                    .println(" Compte Apprenant créé pour : " + savedApprenant.getEmail() + " / mot de passe: 123456");
         }
 
         return toDTO(savedApprenant);
+    }
+
+    @GetMapping("/{id}")
+    public ApprenantDTO getById(@PathVariable Long id) {
+        Apprenant apprenant = apprenantRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Apprenant introuvable avec l'id : " + id));
+        return toDTO(apprenant);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApprenantDTO update(@PathVariable Long id, @RequestBody Apprenant apprenantDetails) {
+        Apprenant apprenant = apprenantRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Apprenant introuvable avec l'id : " + id));
+
+        apprenant.setCin(apprenantDetails.getCin());
+        apprenant.setNom(apprenantDetails.getNom());
+        apprenant.setPrenom(apprenantDetails.getPrenom());
+        apprenant.setEmail(apprenantDetails.getEmail());
+        apprenant.setDateNaissance(apprenantDetails.getDateNaissance());
+        apprenant.setNumero(apprenantDetails.getNumero());
+        apprenant.setDatePremiereInscription(apprenantDetails.getDatePremiereInscription());
+
+        Apprenant updatedApprenant = apprenantRepo.save(apprenant);
+        return toDTO(updatedApprenant);
     }
 
     @DeleteMapping("/{id}")
