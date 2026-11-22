@@ -1,6 +1,5 @@
 package com.example.gestion_formation.security;
 
-
 import com.example.gestion_formation.entities.Utilisateur;
 import com.example.gestion_formation.repositories.UtilisateurRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +17,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         Utilisateur user = utilisateurRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable : " + username));
 
+        String[] rolesArray = user.getRoles().stream()
+                .map(role -> role.getNom().replace("ROLE_", ""))
+                .toArray(String[]::new);
+
         return User.withUsername(user.getUsername())
                 .password(user.getPassword())
                 .disabled(!user.isEnabled())
-                .roles(user.getRoles().stream()
-                        .map(role -> role.replace("ROLE_", "")) // Sécurité pour éviter ROLE_ROLE_ADMIN
-                        .toArray(String[]::new))
+                .roles(rolesArray)
                 .build();
     }
 }
