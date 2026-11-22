@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
-
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -30,6 +31,8 @@ public class SessionFormation {
     private Formateur formateur;
 
 
-    @OneToMany(mappedBy = "sessionFormation")
-    private List<Inscription> inscriptions;
+    @OneToMany(mappedBy = "sessionFormation", cascade = CascadeType.REMOVE)
+@ToString.Exclude
+@EqualsAndHashCode.Exclude
+private List<Inscription> inscriptions;
 }

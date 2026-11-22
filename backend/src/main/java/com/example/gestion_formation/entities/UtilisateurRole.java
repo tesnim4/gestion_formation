@@ -2,7 +2,8 @@ package com.example.gestion_formation.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 @Entity
 @Data
 public class UtilisateurRole {
@@ -11,9 +12,10 @@ public class UtilisateurRole {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "utilisateur_id")
-    private Utilisateur utilisateur;
-
+@JoinColumn(name = "utilisateur_id")
+@ToString.Exclude
+@EqualsAndHashCode.Exclude
+private Utilisateur utilisateur;
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;

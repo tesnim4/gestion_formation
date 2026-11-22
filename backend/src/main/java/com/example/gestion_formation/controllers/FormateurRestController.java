@@ -5,6 +5,7 @@ import com.example.gestion_formation.entities.*;
 import com.example.gestion_formation.repositories.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/formateurs")
-@PreAuthorize("hasRole('ADMIN')") 
+@PreAuthorize("hasRole('ADMIN')")
 public class FormateurRestController {
 
     private final FormateurRepository formateurRepo;
@@ -82,17 +83,25 @@ public class FormateurRestController {
         f.setGrade(updatedFormateur.getGrade());
         f.setFonction(updatedFormateur.getFonction());
 
-        // Si tu as d'autres champs modifiables (comme la date de naissance), ajoute-les
-        // ici
-        // f.setDateNaissance(updatedFormateur.getDateNaissance());
-
         Formateur savedFormateur = formateurRepo.save(f);
         return toDTO(savedFormateur);
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
     public void delete(@PathVariable Long id) {
-        formateurRepo.deleteById(id);
+        Formateur f = formateurRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Formateur introuvable avec l'id : " + id));
+
+        if (f.getSessions() != null) {
+            f.getSessions().forEach(s -> s.setFormateur(null));
+        }
+
+        formateurRepo.delete(f);
+
+        if (f.getEmail() != null) {
+            utilisateurRepo.findByUsername(f.getEmail()).ifPresent(utilisateurRepo::delete);
+        }
     }
 
     private FormateurDTO toDTO(Formateur f) {

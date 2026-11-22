@@ -3,6 +3,8 @@ package com.example.gestion_formation.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -15,5 +17,7 @@ public class Role {
     private String nom; 
 
     @OneToMany(mappedBy = "role")
-    private List<UtilisateurRole> utilisateurs;
+@ToString.Exclude
+@EqualsAndHashCode.Exclude
+private List<UtilisateurRole> utilisateurs;
 }
