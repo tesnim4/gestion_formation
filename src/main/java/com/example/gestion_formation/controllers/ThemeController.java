@@ -22,13 +22,13 @@ public class ThemeController {
     @GetMapping
     public String liste(Model model) {
         model.addAttribute("themes", themeRepo.findAll());
-        return "themes/liste"; // Vue: themes/liste.html
+        return "themes/liste"; 
     }
 
     @GetMapping("/nouveau")
     public String form(Model model) {
         model.addAttribute("theme", new ThemeFormation());
-        return "themes/form"; // Vue: themes/form.html
+        return "themes/form"; 
     }
 
     @PostMapping("/save")
