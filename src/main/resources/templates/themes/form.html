@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Nouveau Thème</title>
+    <title th:text="${theme.id == null} ? 'Nouveau Thème' : 'Modifier le Thème'"></title>
     <style>
         :root {
             --primary: #4f46e5;
@@ -114,12 +115,30 @@
             color: var(--primary);
             text-decoration: underline;
         }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
+
 <body>
     <div class="card">
-        <h1>Créer un Thème</h1>
+
+        <h1 th:text="${theme.id == null} ? 'Créer un Thème' : 'Modifier le Thème'"></h1>
+
+        <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+
         <form th:action="@{/themes/save}" th:object="${theme}" method="post">
+
+            <input type="hidden" th:field="*{id}" />
+
             <div class="form-group">
                 <label>Intitulé : </label>
                 <input type="text" th:field="*{theme}" required>
@@ -131,10 +150,11 @@
             </div>
 
             <div class="actions">
-                <button type="submit">Enregistrer</button>
+                <button type="submit" th:text="${theme.id == null} ? 'Enregistrer' : 'Mettre à jour'"></button>
                 <a th:href="@{/themes}">Annuler</a>
             </div>
         </form>
     </div>
 </body>
+
 </html>

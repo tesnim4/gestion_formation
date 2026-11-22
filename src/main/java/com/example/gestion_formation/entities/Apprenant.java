@@ -7,11 +7,14 @@ import lombok.EqualsAndHashCode;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Apprenant extends Personne {
     private String numero;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate datePremiereInscription;
 
     @OneToMany(mappedBy = "apprenant")
