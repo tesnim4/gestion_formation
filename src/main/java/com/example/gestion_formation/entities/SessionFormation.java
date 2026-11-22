@@ -5,6 +5,8 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Data
 public class SessionFormation {
@@ -12,7 +14,11 @@ public class SessionFormation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate datebut;
+    
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate datefin;
 
     @ManyToOne
