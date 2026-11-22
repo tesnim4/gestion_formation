@@ -31,7 +31,12 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .userDetailsService(userDetailsService)
+            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+            
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+            
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/login", "/error").permitAll()
 
                 .requestMatchers(HttpMethod.GET, "/themes", "/themes/**")

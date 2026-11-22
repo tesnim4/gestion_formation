@@ -20,8 +20,11 @@ public class Utilisateur {
 
     private boolean enabled = true;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "utilisateur_roles", joinColumns = @JoinColumn(name = "utilisateur_id"))
-    @Column(name = "role")
-    private List<String> roles; 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "utilisateur_roles",
+        joinColumns = @JoinColumn(name = "utilisateur_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<Role> roles;
 }
