@@ -15,4 +15,5 @@ public interface InscriptionRepository extends JpaRepository<Inscription, Long> 
     WHERE a.email = :email
 """)
 List<Inscription> findByApprenantEmail(@Param("email") String email);
+List<Inscription> findByApprenantCin(String cin);
 }
