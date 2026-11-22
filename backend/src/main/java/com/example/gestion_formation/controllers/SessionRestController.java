@@ -5,7 +5,8 @@ import com.example.gestion_formation.entities.SessionFormation;
 import com.example.gestion_formation.repositories.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,11 @@ public class SessionRestController {
         if (dto.getFormateurId() != null) {
             s.setFormateur(formateurRepo.findById(dto.getFormateurId()).orElse(null));
         }
+        if (dto.getDateDebut() != null && dto.getDateFin() != null
+        && !dto.getDateFin().isAfter(dto.getDateDebut())) {
+    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            "La date de fin doit être postérieure à la date de début.");
+}
         return toDTO(sessionRepo.save(s));
     }
 
@@ -70,7 +76,7 @@ public class SessionRestController {
         if (dto.getFormateurId() != null) {
             s.setFormateur(formateurRepo.findById(dto.getFormateurId()).orElse(null));
         } else {
-            s.setFormateur(null); // Permet de retirer le formateur si le champ est vidé
+            s.setFormateur(null); 
         }
 
         return toDTO(sessionRepo.save(s));

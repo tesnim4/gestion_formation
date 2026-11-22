@@ -55,6 +55,12 @@ export default function SessionFormPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (form.dateDebut && form.dateFin && form.dateFin <= form.dateDebut) {
+            setError("La date de fin doit être postérieure à la date de début.");
+            return;
+        }
+        setError(null);
         try {
             if (isEditMode) {
                 await axiosClient.put(`/sessions/${id}`, form);
@@ -93,7 +99,7 @@ export default function SessionFormPage() {
                         </div>
                         <div className="field">
                             <label>Date fin</label>
-                            <input type="date" value={form.dateFin} onChange={e => setForm({ ...form, dateFin: e.target.value })} required />
+                            <input type="date" value={form.dateFin} min={form.dateDebut} onChange={e => setForm({ ...form, dateFin: e.target.value })} required />
                         </div>
 
                         <div className="field">
