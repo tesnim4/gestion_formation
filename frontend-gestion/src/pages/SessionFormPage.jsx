@@ -7,24 +7,22 @@ export default function SessionFormPage() {
     const navigate = useNavigate();
     const isEditMode = Boolean(id);
 
-    const [form, setForm] = useState({ 
-        description: '', 
-        dateDebut: '', 
-        dateFin: '', 
-        themeId: '', 
-        formateurId: '' 
+    const [form, setForm] = useState({
+        description: '',
+        dateDebut: '',
+        dateFin: '',
+        themeId: '',
+        formateurId: ''
     });
-    
+
     const [themes, setThemes] = useState([]);
     const [formateurs, setFormateurs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Chargement des listes (thèmes et formateurs) + données de la session si modification
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // 1. Charger les menus déroulants
                 const [resThemes, resFormateurs] = await Promise.all([
                     axiosClient.get('/themes'),
                     axiosClient.get('/formateurs')
@@ -32,17 +30,14 @@ export default function SessionFormPage() {
                 setThemes(resThemes.data);
                 setFormateurs(resFormateurs.data);
 
-                // 2. Si on est en modification, charger les données de la session
                 if (isEditMode) {
                     const resSession = await axiosClient.get(`/sessions/${id}`);
                     const s = resSession.data;
-                    
+
                     setForm({
                         description: s.description || '',
-                        // On coupe la date au "T" pour avoir le format YYYY-MM-DD
                         dateDebut: s.dateDebut ? s.dateDebut.split('T')[0] : '',
                         dateFin: s.dateFin ? s.dateFin.split('T')[0] : '',
-                        // On récupère l'ID du thème et du formateur (selon comment ton backend renvoie les données)
                         themeId: s.themeId || (s.themeFormation ? s.themeFormation.id : ''),
                         formateurId: s.formateurId || (s.formateur ? s.formateur.id : '')
                     });
@@ -73,58 +68,58 @@ export default function SessionFormPage() {
         }
     };
 
-    if (loading) return <div style={{ padding: 30 }}>Chargement...</div>;
+    if (loading) return <div className="state-box">Chargement...</div>;
 
     return (
-        <div style={{ padding: 30, maxWidth: 600, margin: '0 auto' }}>
-            <Link to="/sessions">← Retour à la liste</Link>
-            <h2>{isEditMode ? "Modifier la Session" : "Créer une Session"}</h2>
-            
-            {error && <div style={{ color: 'red', background: '#ffeeee', padding: 10, borderRadius: 4, marginBottom: 15 }}>{error}</div>}
+        <div>
+            <Link to="/sessions" className="back-link">← Retour à la liste</Link>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 15, background: '#f9f9f9', padding: 20, borderRadius: 8 }}>
-                
-                <div>
-                    <label style={{ display: 'block', marginBottom: 5 }}>Description :</label>
-                    <input value={form.description} onChange={e => setForm({...form, description: e.target.value})} required style={{ width: '100%', padding: 8 }} />
-                </div>
+            <div className="card form-card">
+                <h2>{isEditMode ? "Modifier la session" : "Créer une session"}</h2>
+                <p className="sub">Définissez la période, le thème et le formateur.</p>
 
-                <div style={{ display: 'flex', gap: 10 }}>
-                    <div style={{ flex: 1 }}>
-                        <label style={{ display: 'block', marginBottom: 5 }}>Date début :</label>
-                        <input type="date" value={form.dateDebut} onChange={e => setForm({...form, dateDebut: e.target.value})} required style={{ width: '100%', padding: 8 }} />
+                {error && <div className="alert-error">{error}</div>}
+
+                <form onSubmit={handleSubmit}>
+                    <div className="form-grid">
+                        <div className="field full">
+                            <label>Description</label>
+                            <input value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} required />
+                        </div>
+
+                        <div className="field">
+                            <label>Date début</label>
+                            <input type="date" value={form.dateDebut} onChange={e => setForm({ ...form, dateDebut: e.target.value })} required />
+                        </div>
+                        <div className="field">
+                            <label>Date fin</label>
+                            <input type="date" value={form.dateFin} onChange={e => setForm({ ...form, dateFin: e.target.value })} required />
+                        </div>
+
+                        <div className="field">
+                            <label>Thème</label>
+                            <select value={form.themeId} onChange={e => setForm({ ...form, themeId: e.target.value })} required>
+                                <option value="">-- Sélectionner un thème --</option>
+                                {themes.map(t => <option key={t.id} value={t.id}>{t.theme}</option>)}
+                            </select>
+                        </div>
+                        <div className="field">
+                            <label>Formateur</label>
+                            <select value={form.formateurId} onChange={e => setForm({ ...form, formateurId: e.target.value })}>
+                                <option value="">-- Sélectionner un formateur --</option>
+                                {formateurs.map(f => <option key={f.id} value={f.id}>{f.nom} {f.prenom}</option>)}
+                            </select>
+                        </div>
                     </div>
-                    <div style={{ flex: 1 }}>
-                        <label style={{ display: 'block', marginBottom: 5 }}>Date fin :</label>
-                        <input type="date" value={form.dateFin} onChange={e => setForm({...form, dateFin: e.target.value})} required style={{ width: '100%', padding: 8 }} />
+
+                    <div className="form-actions">
+                        <button type="submit" className="btn btn-success">
+                            {isEditMode ? "Mettre à jour" : "Créer"}
+                        </button>
+                        <Link to="/sessions" className="btn btn-ghost">Annuler</Link>
                     </div>
-                </div>
-
-                <div>
-                    <label style={{ display: 'block', marginBottom: 5 }}>Thème :</label>
-                    <select value={form.themeId} onChange={e => setForm({...form, themeId: e.target.value})} required style={{ width: '100%', padding: 8 }}>
-                        <option value="">-- Sélectionner un thème --</option>
-                        {themes.map(t => <option key={t.id} value={t.id}>{t.theme}</option>)}
-                    </select>
-                </div>
-
-                <div>
-                    <label style={{ display: 'block', marginBottom: 5 }}>Formateur :</label>
-                    <select value={form.formateurId} onChange={e => setForm({...form, formateurId: e.target.value})} style={{ width: '100%', padding: 8 }}>
-                        <option value="">-- Sélectionner un formateur --</option>
-                        {formateurs.map(f => <option key={f.id} value={f.id}>{f.nom} {f.prenom}</option>)}
-                    </select>
-                </div>
-
-                <div style={{ marginTop: 15, display: 'flex', gap: 10 }}>
-                    <button type="submit" style={{ padding: '10px 20px', background: '#28a745', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
-                        {isEditMode ? "Mettre à jour" : "Créer"}
-                    </button>
-                    <Link to="/sessions">
-                        <button type="button" style={{ padding: '10px 20px', cursor: 'pointer' }}>Annuler</button>
-                    </Link>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     );
 }

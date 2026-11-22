@@ -1,8 +1,9 @@
 package com.example.gestion_formation.config;
 
-import com.example.gestion_formation.security.CustomUserDetailsService; 
+import com.example.gestion_formation.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -47,13 +48,18 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .userDetailsService(userDetailsService)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login").permitAll() 
+                .requestMatchers("/api/auth/login").permitAll()
+
+                .requestMatchers(HttpMethod.GET, "/api/themes/**").hasAnyRole("ADMIN", "FORMATEUR")
                 .requestMatchers("/api/themes/**").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.GET, "/api/sessions/**").hasAnyRole("ADMIN", "FORMATEUR", "APPRENANT")
+                .requestMatchers("/api/sessions/**").hasAnyRole("ADMIN", "FORMATEUR")
+
                 .requestMatchers("/api/formateurs/**").hasRole("ADMIN")
                 .requestMatchers("/api/apprenants/**").hasAnyRole("ADMIN", "FORMATEUR")
-                .requestMatchers("/api/sessions/**").hasAnyRole("ADMIN", "FORMATEUR")
                 .requestMatchers("/api/inscriptions/**").hasAnyRole("ADMIN", "FORMATEUR", "APPRENANT")
-                .anyRequest().authenticated() 
+                .anyRequest().authenticated()
             )
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
@@ -68,10 +74,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173")); 
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);  
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

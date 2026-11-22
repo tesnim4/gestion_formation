@@ -12,8 +12,8 @@ export default function ThemesPage() {
         axiosClient.get('/themes').then(res => setThemes(res.data));
     };
 
-    useEffect(() => { 
-        loadThemes(); 
+    useEffect(() => {
+        loadThemes();
     }, []);
 
     const deleteTheme = async (id) => {
@@ -24,47 +24,49 @@ export default function ThemesPage() {
     };
 
     return (
-        <div style={{ padding: 30 }}>
-            <Link to="/accueil">← Retour à l'accueil</Link>
-            
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                <h2>Gestion des Thèmes</h2>
+        <div>
+            <div className="page-head">
+                <div>
+                    <h2>Thèmes de formation</h2>
+                    <p>{themes.length} thème(s) disponible(s)</p>
+                </div>
                 {isAdmin && (
-                    <Link to="/themes/nouveau">
-                        <button style={{ padding: '10px 15px', background: '#007bff', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
-                            + Ajouter un thème
-                        </button>
-                    </Link>
+                    <Link to="/themes/nouveau" className="btn btn-primary">+ Ajouter un thème</Link>
                 )}
             </div>
 
-            <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead style={{ background: '#f4f4f4' }}>
-                    <tr>
-                        <th>ID</th>
-                        <th>Thème</th>
-                        <th>Mots-clés</th>
-                        {isAdmin && <th>Actions</th>}
-                    </tr>
-                </thead>
-                <tbody>
-                    {themes.map(t => (
-                        <tr key={t.id}>
-                            <td>{t.id}</td>
-                            <td>{t.theme}</td>
-                            <td>{t.motsCles}</td>
-                            {isAdmin && (
-                                <td>
-                                    <Link to={`/themes/${t.id}/edit`}>
-                                        <button style={{ marginRight: 10, cursor: 'pointer' }}>Modifier</button>
-                                    </Link>
-                                    <button onClick={() => deleteTheme(t.id)} style={{ color: 'red', cursor: 'pointer' }}>Supprimer</button>
-                                </td>
-                            )}
+            <div className="card table-wrap">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Thème</th>
+                            <th>Mots-clés</th>
+                            {isAdmin && <th>Actions</th>}
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {themes.length === 0 && (
+                            <tr><td colSpan={isAdmin ? 4 : 3} className="empty">Aucun thème pour le moment.</td></tr>
+                        )}
+                        {themes.map(t => (
+                            <tr key={t.id}>
+                                <td className="id-cell">#{t.id}</td>
+                                <td className="strong">{t.theme}</td>
+                                <td>{t.motsCles}</td>
+                                {isAdmin && (
+                                    <td>
+                                        <div className="actions">
+                                            <Link to={`/themes/${t.id}/edit`} className="btn btn-sm btn-edit">Modifier</Link>
+                                            <button onClick={() => deleteTheme(t.id)} className="btn btn-sm btn-danger">Supprimer</button>
+                                        </div>
+                                    </td>
+                                )}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

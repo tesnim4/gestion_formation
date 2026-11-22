@@ -26,7 +26,7 @@ public class SessionRestController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','FORMATEUR')")
+    @PreAuthorize("hasAnyRole('ADMIN','FORMATEUR','APPRENANT')")
     public List<SessionDTO> getAll() {
         return sessionRepo.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }

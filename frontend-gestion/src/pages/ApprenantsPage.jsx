@@ -9,9 +9,9 @@ export default function ApprenantsPage() {
     const isAdmin = user?.roles?.includes('ROLE_ADMIN');
 
     const load = () => axiosClient.get('/apprenants').then(res => setApprenants(res.data));
-    
-    useEffect(() => { 
-        load(); 
+
+    useEffect(() => {
+        load();
     }, []);
 
     const remove = async (id) => {
@@ -22,52 +22,53 @@ export default function ApprenantsPage() {
     };
 
     return (
-        <div style={{ padding: 30 }}>
-            <Link to="/accueil">← Accueil</Link>
-            
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                <h2>Gestion des Apprenants</h2>
+        <div>
+            <div className="page-head">
+                <div>
+                    <h2>Apprenants</h2>
+                    <p>{apprenants.length} apprenant(s) enregistré(s)</p>
+                </div>
                 {isAdmin && (
-                    <Link to="/apprenants/nouveau">
-                        <button style={{ padding: '10px 15px', background: '#007bff', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
-                            + Ajouter un apprenant
-                        </button>
-                    </Link>
+                    <Link to="/apprenants/nouveau" className="btn btn-primary">+ Ajouter un apprenant</Link>
                 )}
             </div>
 
-            <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                    <tr style={{ backgroundColor: '#f4f4f4' }}>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Email</th>
-                        <th>Numéro</th>
-                        {isAdmin && <th>Actions</th>}
-                    </tr>
-                </thead>
-                <tbody>
-                    {apprenants.map(a => (
-                        <tr key={a.id}>
-                            <td>{a.id}</td>
-                            <td>{a.nom}</td>
-                            <td>{a.prenom}</td>
-                            <td>{a.email}</td>
-                            <td>{a.numero}</td>
-                            {isAdmin && (
-                                <td>
-                                    {/* Utilisation de Link pour aller vers la page d'édition */}
-                                    <Link to={`/apprenants/${a.id}/edit`}>
-                                        <button style={{ marginRight: 10, cursor: 'pointer' }}>Modifier</button>
-                                    </Link>
-                                    <button onClick={() => remove(a.id)} style={{ color: 'red', cursor: 'pointer' }}>Supprimer</button>
-                                </td>
-                            )}
+            <div className="card table-wrap">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Email</th>
+                            <th>Numéro</th>
+                            {isAdmin && <th>Actions</th>}
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {apprenants.length === 0 && (
+                            <tr><td colSpan={isAdmin ? 6 : 5} className="empty">Aucun apprenant pour le moment.</td></tr>
+                        )}
+                        {apprenants.map(a => (
+                            <tr key={a.id}>
+                                <td className="id-cell">#{a.id}</td>
+                                <td className="strong">{a.nom}</td>
+                                <td>{a.prenom}</td>
+                                <td>{a.email}</td>
+                                <td>{a.numero}</td>
+                                {isAdmin && (
+                                    <td>
+                                        <div className="actions">
+                                            <Link to={`/apprenants/${a.id}/edit`} className="btn btn-sm btn-edit">Modifier</Link>
+                                            <button onClick={() => remove(a.id)} className="btn btn-sm btn-danger">Supprimer</button>
+                                        </div>
+                                    </td>
+                                )}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

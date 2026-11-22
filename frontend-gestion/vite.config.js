@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8083', // L'adresse de votre Spring Boot
+        target: 'http://localhost:8083', 
         changeOrigin: true,
       }
     }
